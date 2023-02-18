@@ -12,6 +12,7 @@ dotenv.config();
 import axios from "axios";
 import SqlString from "sqlstring";
 
+// 알약 정보 가져오는 REST API
 const key = process.env.SERVICE_KEY;
 if (!key) console.log("서비스 키를 찾을 수 없습니다.");
 
