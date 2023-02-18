@@ -1,3 +1,5 @@
+import { pad3 } from "./../module/pad3";
+import { sleep } from "./../module/sleep";
 import { resetQuery, writeQuery } from "../module/fs";
 import { ResponseType } from "./index.d";
 /* NodeJs 12 샘플 코드 */
@@ -8,33 +10,36 @@ import { ResponseType } from "./index.d";
 import * as dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
+import SqlString from "sqlstring";
+
 const key = process.env.SERVICE_KEY;
 if (!key) console.log("서비스 키를 찾을 수 없습니다.");
 
-const url = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01";
-let queryParams = "?" + encodeURIComponent("serviceKey") + `=${key}`; /* Service Key*/
-// queryParams += "&" + encodeURIComponent("item_name") + "=" + encodeURIComponent(""); /* */
-// queryParams += "&" + encodeURIComponent("entp_name") + "=" + encodeURIComponent(""); /* */
-// queryParams += "&" + encodeURIComponent("item_seq") + "=" + encodeURIComponent(""); /* */
-// queryParams += "&" + encodeURIComponent("img_regist_ts") + "=" + encodeURIComponent(""); /* */
-// queryParams += "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1"); /* */
-queryParams += "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("300"); /* */
-// queryParams += "&" + encodeURIComponent("edi_code") + "=" + encodeURIComponent(""); /* */
-queryParams += "&" + encodeURIComponent("type") + "=" + encodeURIComponent("json"); /* */
+const f = async (page: number) => {
+  const url = `http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?serviceKey=${key}&numOfRows=300&type=json&pageNo=${page}`;
+  await axios
+    .get(url)
+    .then((d) => d.data)
+    .then((d: ResponseType) => {
+      const data = d.body ? d.body.items : null;
+      if (!data) return;
+      data.map(async (item, index) => {
+        const sql = SqlString.format("INSERT INTO medicine SET ?", { ...item, page, index });
+        await writeQuery(`${sql};\n`);
+      });
+    })
+    .catch((err) => console.log("ERROR:", err));
+};
 
-axios
-  .get(`${url}${queryParams}`)
-  .then((d) => d.data)
-  .then((d: ResponseType) => {
-    resetQuery();
-    d.body.items.map(async (item) => {
-      await writeQuery(`INSERT INTO medicine ${item.CHART}\n`);
-    });
-  })
-  .catch((err) => console.log("ERROR:", err));
+const start = async () => {
+  const max = 100;
+  for (let i = 1; i <= max; i++) {
+    console.log(`[${pad3(i)}/${pad3(max)}] start ~`);
+    await f(i);
+    sleep(200);
+    console.log(`[${pad3(i)}/${pad3(max)}] completed ~ !`);
+  }
+};
 
-// (error, response, body) => {
-//   //console.log('Status', response.statusCode);
-//   //console.log('Headers', JSON.stringify(response.headers));
-//   //console.log('Reponse received', body);
-// };
+resetQuery();
+start();
