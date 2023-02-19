@@ -58,7 +58,7 @@ def draw_points(img, cnt, epsilon, color):
 
 
 # 이미지 불러와서 필터링
-img = cv2.imread("../docs/raw_medicine_image/1cMBag.jpg")
+img = cv2.imread("docs/raw_image/1cMBag.jpg")
 filter_img = cv2.inRange(img, (0, 0, 0), (255, 150, 255))
 
 # 경계선 가져오기
