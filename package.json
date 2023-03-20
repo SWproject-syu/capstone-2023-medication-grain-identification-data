@@ -4,8 +4,9 @@
   "description": "nodejs 소스코드를 통해 rest-api 연동하여 DB에 저장하는 예제입니다.",
   "main": "index.js",
   "scripts": {
-    "py": "python src/imageCrop.py",
-    "dev": "ts-node src/index.ts",
+    "crop:one": "python src/imageCrop_item_one.py",
+    "crop": "python src/imageCrop.py",
+    "classification": "python src/imageClassificationBySize.py",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
