@@ -18,3 +18,7 @@ nodejs 소스코드를 통해 rest-api 연동하여 DB에 저장하는 예제입
 # Final preprocessed pill photos Download
 - Only pill images [Google-Drive-Download](https://drive.google.com/file/d/1FRhbiU-ydsd70HxanQVb3USJEv2rhmFC/view?usp=share_link)
 - With Crop images [Google-Drive-Download](https://drive.google.com/file/d/1MPtUCdwUJaU5r337qDVUxNf6Ur243Y-a/view?usp=share_link)
+
+
+# Result
+- [Video](https://www.notion.so/minsekim1/OCR-8dfd799d977a45d98ad79d2da3911dee?pvs=4#a3b6b4bcf0264edba565026c1c637971)
